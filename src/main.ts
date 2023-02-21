@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +24,8 @@ async function bootstrap() {
   if (configService.get('NODE_ENV') === 'development') {
     Logger.log(`Application running on port ${PORT}, http://localhost:${PORT}`);
   }
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(PORT);
 }
