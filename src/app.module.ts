@@ -9,9 +9,9 @@ import { validation } from './utils';
     ConfigModule.forRoot({
       envFilePath:
         process.env.NODE_ENV === 'production'
-          ? '.production.env'
+          ? '.env.prod'
           : process.env.NODE_ENV === 'development'
-          ? '.development.env'
+          ? '.env.dev'
           : '.env',
       isGlobal: true,
       validationSchema: validation,
