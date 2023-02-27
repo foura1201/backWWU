@@ -29,7 +29,7 @@
     "class-validator": "^0.14.0",
     "cross-env": "^7.0.3",
     "joi": "^17.8.1",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.1.2",
     "pg": "^8.9.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",

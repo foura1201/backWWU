@@ -8,7 +8,9 @@ export class AppService {
       ' ' +
       process.env.DB_PASSWORD +
       ' ' +
-      process.env.DB_PORT
+      process.env.DB_PORT +
+      ' ' +
+      process.env.DB_DATABASE
     );
   }
 }
