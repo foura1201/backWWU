@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { validation } from './utils';
+import { validation } from './lib/utils';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recruit } from './entity/recruit.entity';
 import { Country } from './entity/country.entity';
 import { Industry } from './entity/industry.entity';
 import { User } from './entity/user.entity';
+import { RecruitModule } from './recruit/recruit.module';
 
 @Module({
   imports: [
@@ -28,8 +27,9 @@ import { User } from './entity/user.entity';
       entities: [Recruit, Country, Industry, User],
       synchronize: true,
     }),
+    RecruitModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
