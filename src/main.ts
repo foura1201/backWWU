@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter.filter';
+import { HttpExceptionFilter } from './lib/common/filters/HttpExceptionFilter.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

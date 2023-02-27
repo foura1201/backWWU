@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { validation } from './utils';
+import { validation } from './lib/utils';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Recruit } from './entity/recruit.entity';
+import { Country } from './entity/country.entity';
+import { Industry } from './entity/industry.entity';
+import { User } from './entity/user.entity';
+import { RecruitModule } from './recruit/recruit.module';
 
 @Module({
   imports: [
@@ -15,17 +18,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       validationSchema: validation,
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'mysql',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [__dirname + '../**/*.entity.{js,ts}'],
+      entities: [Recruit, Country, Industry, User],
       synchronize: true,
     }),
+    RecruitModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
