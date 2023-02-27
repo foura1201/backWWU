@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { validation } from './utils';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Recruit } from './entity/recruit.entity';
+import { Country } from './entity/country.entity';
+import { Industry } from './entity/industry.entity';
 
 @Module({
   imports: [
@@ -21,7 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [__dirname + '../**/*.entity.{js,ts}'],
+      entities: [Recruit, Country, Industry],
       synchronize: true,
     }),
   ],
