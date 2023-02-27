@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recruit } from './entity/recruit.entity';
 import { Country } from './entity/country.entity';
 import { Industry } from './entity/industry.entity';
+import { User } from './entity/user.entity';
 
 @Module({
   imports: [
@@ -18,13 +19,13 @@ import { Industry } from './entity/industry.entity';
       validationSchema: validation,
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'mysql',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Recruit, Country, Industry],
+      entities: [Recruit, Country, Industry, User],
       synchronize: true,
     }),
   ],
