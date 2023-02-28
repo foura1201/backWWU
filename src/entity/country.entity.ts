@@ -5,6 +5,6 @@ export class Country extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false, unique: true })
   countryName: string;
 }

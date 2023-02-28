@@ -14,33 +14,33 @@ export class Recruit extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
   business: User;
 
-  @Column()
+  @Column({ nullable: false })
   recruitName: string;
 
-  @Column()
+  @Column({ nullable: false })
   recruitStart: Date;
 
-  @Column()
+  @Column({ nullable: false })
   recruitEnd: Date;
 
-  @Column()
+  @Column({ nullable: false })
   description: string;
 
   @ManyToOne(() => Country, (country) => country.id, { nullable: true })
   country: Country;
 
-  @Column()
+  @Column({ nullable: true })
   location: string;
 
   @ManyToOne(() => Industry, (industry) => industry.id, { nullable: true })
   industry: number;
 
-  @Column()
+  @Column({ nullable: true })
   photos: string;
 
-  @Column()
+  @Column({ nullable: true })
   certifications: string;
 }
