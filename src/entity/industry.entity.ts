@@ -5,6 +5,6 @@ export class Industry extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false, unique: true })
   industryName: string;
 }
