@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RecruitService } from './recruit.service';
 import { RecruitController } from './recruit.controller';
-import { TypeOrmExModule } from 'src/repository/typeorm-ex.module';
+import { TypeOrmExModule } from 'src/lib/typeorm-ex.module';
 import { RecruitRepository } from './recruit.repository';
 
 @Module({
