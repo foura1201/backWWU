@@ -10,7 +10,7 @@ import { Recruit } from './recruit.entity';
 import { User } from './user.entity';
 
 @Entity()
-export class Like extends BaseEntity {
+export class RecruitLike extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

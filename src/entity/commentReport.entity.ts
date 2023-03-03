@@ -11,7 +11,7 @@ import { ReportType } from './postReport.entity';
 import { User } from './user.entity';
 
 @Entity()
-export class postReport extends BaseEntity {
+export class CommentReport extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
