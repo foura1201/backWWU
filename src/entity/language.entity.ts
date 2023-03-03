@@ -17,4 +17,7 @@ export class Language extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, cascade: true })
   person: User;
+
+  @Column()
+  level: string;
 }
