@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Recruit } from 'src/entity/recruit.entity';
-import { recruitRepository } from 'src/repository/recruit.repository';
+import { RecruitRepository } from './recruit.repository';
 
 @Injectable()
 export class RecruitService {
+  constructor(private recruitRepository: RecruitRepository) {}
   recruitList = [];
 
   async getAllRecruits(): Promise<Recruit[]> {
     console.log(1);
-    const recruitList = await recruitRepository.findBy({ id: 1 });
-    console.log(2);
-    console.log(recruitList);
-    return recruitList;
+    return this.recruitRepository.find();
+    //console.log(2);
   }
 }
