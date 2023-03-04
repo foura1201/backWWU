@@ -11,6 +11,6 @@ export class RecruitController {
     const serviceResult = await this.recruitService.getAllRecruits();
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
-    else return res.status(200).json(serviceResult.message);
+    else return res.status(400).json(serviceResult.message);
   }
 }
