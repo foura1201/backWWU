@@ -1,5 +1,3 @@
-import { Recruit } from 'src/entity/recruit.entity';
-import { User } from 'src/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 

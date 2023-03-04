@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Industry } from './industry.entity';
-import { User } from './user.entity';
+import Industry from './industry.entity';
+import User from './user.entity';
 
 @Entity()
-export class Career extends BaseEntity {
+export default class Career extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

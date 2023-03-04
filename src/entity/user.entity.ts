@@ -7,11 +7,12 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
-import { Country } from './country.entity';
-import { Industry } from './industry.entity';
+import Country from './country.entity';
+import Industry from './industry.entity';
+import { UserType } from 'src/lib/enumeration/enum';
 
 @Entity()
-export class User extends BaseEntity {
+export default class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -60,9 +61,4 @@ export class User extends BaseEntity {
     const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);
   }
-}
-
-export enum UserType {
-  person = 'person',
-  business = 'business',
 }
