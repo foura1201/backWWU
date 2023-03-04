@@ -1,4 +1,4 @@
-import { Recruit } from 'src/entity/recruit.entity';
+import Recruit from 'src/entity/recruit.entity';
 import { CustomRepository } from 'src/lib/typeorm-ex.decorator';
 import { Repository } from 'typeorm';
 
