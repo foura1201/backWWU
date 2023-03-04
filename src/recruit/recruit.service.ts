@@ -5,30 +5,34 @@ import { RecruitRepository } from './recruit.repository';
 @Injectable()
 export class RecruitService {
   constructor(private recruitRepository: RecruitRepository) {}
-  recruitList = [];
-
-  /*async getAllRecruits(): Promise<Recruit[]> {
-    console.log(1);
-    return this.recruitRepository.find();
-    //console.log(2);
-  }*/
 
   async getAllRecruits(): Promise<ServiceResult> {
     const recruitList = await this.recruitRepository.find();
 
-    if (recruitList.length === 0) {
-      const serviceResultData: ServiceResult = {
-        code: 400,
-        message: 'Bad Request',
+    const serviceResult: ServiceResult = {
+      code: 200,
+      message: 'success!',
+      data: recruitList,
+    };
+    return serviceResult;
+  }
+
+  async getRecruit(recruitId: number): Promise<ServiceResult> {
+    const recruit = await this.recruitRepository.findBy({ id: recruitId });
+
+    if (recruit.length === 0) {
+      const serviceResult: ServiceResult = {
+        code: 404,
+        message: 'Not Found',
       };
-      return serviceResultData;
+      return serviceResult;
     } else {
-      const serviceResultData: ServiceResult = {
+      const serviceResult: ServiceResult = {
         code: 200,
-        message: 'success!',
-        data: recruitList,
+        message: 'Success!',
+        data: recruit,
       };
-      return serviceResultData;
+      return serviceResult;
     }
   }
 }
