@@ -1,3 +1,4 @@
+import { ReportType } from 'src/lib/enumeration/enum';
 import {
   BaseEntity,
   Column,
@@ -6,12 +7,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Comment } from './comment.entity';
-import { ReportType } from './postReport.entity';
-import { User } from './user.entity';
+import Comment from './comment.entity';
+import User from './user.entity';
 
 @Entity()
-export class CommentReport extends BaseEntity {
+export default class CommentReport extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

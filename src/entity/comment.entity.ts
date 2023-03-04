@@ -6,11 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
-import { User } from './user.entity';
+import Post from './post.entity';
+import User from './user.entity';
 
 @Entity()
-export class Comment extends BaseEntity {
+export default class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

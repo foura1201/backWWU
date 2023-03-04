@@ -5,10 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import User from './user.entity';
 
 @Entity()
-export class Review extends BaseEntity {
+export default class Review extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

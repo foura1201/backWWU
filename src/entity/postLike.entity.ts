@@ -6,11 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
-import { User } from './user.entity';
+import Post from './post.entity';
+import User from './user.entity';
 
 @Entity()
-export class PostLike extends BaseEntity {
+export default class PostLike extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
