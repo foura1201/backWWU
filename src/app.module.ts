@@ -7,6 +7,10 @@ import Country from './entity/country.entity';
 import Industry from './entity/industry.entity';
 import User from './entity/user.entity';
 import { RecruitModule } from './recruit/recruit.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthController } from './—no-spec/auth/auth.controller';
+import { AuthService } from './—no-spec/auth/auth.service';
+import { BoardsController } from './boards/boards.controller';
 import Career from './entity/career.entity';
 import Chat from './entity/chat.entity';
 import Chatbot from './entity/chatbot.entity';
@@ -57,8 +61,9 @@ import Comment from './entity/comment.entity';
       synchronize: true,
     }),
     RecruitModule,
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AuthController, BoardsController],
+  providers: [AuthService],
 })
 export class AppModule {}

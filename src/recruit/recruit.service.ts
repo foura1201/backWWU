@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import ServiceResult from 'src/lib/serviceResult';
-import { RecruitRepository } from './recruit.repository';
+import { RecruitRepository } from '../repository/recruit.repository';
 
 @Injectable()
 export class RecruitService {
