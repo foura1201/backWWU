@@ -1,3 +1,4 @@
+import { ReportType } from 'src/lib/enumeration/enum';
 import {
   BaseEntity,
   Column,
@@ -21,9 +22,4 @@ export default class PostReport extends BaseEntity {
 
   @ManyToOne(() => Post, (post) => post.id, { nullable: false })
   post: Post;
-}
-
-export enum ReportType {
-  business = 'business',
-  //수정 필요
 }

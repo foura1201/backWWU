@@ -1,3 +1,4 @@
+import { PostType } from 'src/lib/enumeration/enum';
 import {
   BaseEntity,
   Column,
@@ -30,10 +31,4 @@ export default class Post extends BaseEntity {
 
   @Column({ default: 0 })
   views: number;
-}
-
-export enum PostType {
-  work = 'work',
-  business = 'business',
-  //수정 필요
 }
