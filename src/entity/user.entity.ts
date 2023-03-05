@@ -31,7 +31,7 @@ export default class User extends BaseEntity {
   @Column()
   preferredLanguage: string;
 
-  @Column()
+  @Column({ nullable: true })
   phoneNumber: string;
 
   @Column({ nullable: true })
@@ -55,10 +55,4 @@ export default class User extends BaseEntity {
 
   @Column({ nullable: true })
   profile: string;
-
-  @BeforeInsert()
-  async hashPassword() {
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
-  }
 }
