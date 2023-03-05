@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validation } from './lib/utils';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RecruitModule } from './recruit/recruit.module';
+import { ChatModule } from './chat/chat.module';
+import { BoardModule } from './board/board.module';
+import { MyModule } from './my/my.module';
 import Recruit from './entity/recruit.entity';
 import Country from './entity/country.entity';
 import Industry from './entity/industry.entity';
 import User from './entity/user.entity';
-import { RecruitModule } from './recruit/recruit.module';
 import { AuthModule } from './auth/auth.module';
 import Career from './entity/career.entity';
 import Chat from './entity/chat.entity';
@@ -59,6 +62,9 @@ import Comment from './entity/comment.entity';
     }),
     RecruitModule,
     AuthModule,
+    ChatModule,
+    BoardModule,
+    MyModule,
   ],
   controllers: [],
   providers: [],
