@@ -10,6 +10,7 @@ import Recruit from './entity/recruit.entity';
 import Country from './entity/country.entity';
 import Industry from './entity/industry.entity';
 import User from './entity/user.entity';
+import { AuthModule } from './auth/auth.module';
 import Career from './entity/career.entity';
 import Chat from './entity/chat.entity';
 import Chatbot from './entity/chatbot.entity';
@@ -60,6 +61,7 @@ import Comment from './entity/comment.entity';
       synchronize: true,
     }),
     RecruitModule,
+    AuthModule,
     ChatModule,
     BoardModule,
     MyModule,
