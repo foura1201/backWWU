@@ -30,4 +30,11 @@ export class AuthController {
   authTest(@Req() req) {
     console.log(req);
   }
+
+  @UseGuards(AuthGuard())
+  @Post('logout')
+  async logOut(@Req() req, @Res() res: Response) {
+    res.setHeader('Set-Cookie', this.authService.getCookieForLogOut());
+    return res.sendStatus(200);
+  }
 }
