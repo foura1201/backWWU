@@ -80,4 +80,8 @@ export class AuthService {
       throw new UnauthorizedException('logIn failed');
     }
   }
+
+  public getCookieForLogOut() {
+    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
 }
