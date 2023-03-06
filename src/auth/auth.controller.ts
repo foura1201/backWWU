@@ -1,8 +1,6 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { registerDecorator } from 'class-validator';
 import { Response } from 'express';
-import RegisterDto from 'src/dto/register.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -11,6 +9,18 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() registerDto, @Res() res: Response) {
+    const { username, password, passwordCheck, userType, preferredLanguage } =
+      registerDto;
+    if (
+      username === undefined ||
+      password === undefined ||
+      passwordCheck === undefined ||
+      userType === undefined ||
+      preferredLanguage == undefined
+    ) {
+      return res.status(400).json('request body is wrong');
+    }
+
     const serviceResult = await this.authService.registerUser(registerDto);
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
