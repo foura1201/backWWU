@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import User from 'src/entity/user.entity';
 import ServiceResult from 'src/lib/serviceResult';
+import { ReviewRepository } from 'src/repository/review.repository';
+import { UserRepository } from 'src/repository/user.repository';
 import { RecruitRepository } from '../repository/recruit.repository';
 
 @Injectable()
 export class RecruitService {
-  reviewRepository: any;
-  userRepository: any;
   constructor(private recruitRepository: RecruitRepository) {}
 
   async getAllRecruits(): Promise<ServiceResult> {
@@ -28,14 +29,14 @@ export class RecruitService {
 
   async getRecruit(id: number): Promise<ServiceResult> {
     try {
-      const recruit = await this.recruitRepository.findOne({ where: { id } });
-      const businessId = recruit.business;
+      const recruit = await this.recruitRepository.findOne({
+        where: { id },
+        relations: ['business'],
+      });
+      const businessId = recruit.business.id;
       /*
       const businessReview = await this.reviewRepository.findOne({
         where: { business: businessId },
-      });
-      const businessInfo = await this.userRepository.findOne({
-        where: { id: businessId },
       });
       */
       if (recruit === undefined) {

@@ -20,6 +20,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   public async registerUser(user: RegisterDto): Promise<ServiceResult> {
+    if (user.password !== user.passwordCheck) {
+      throw new HttpException(
+        '비밀번호가 틀립니다',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
     try {
