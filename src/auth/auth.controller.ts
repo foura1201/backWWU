@@ -30,21 +30,22 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto, @Res() res: Response) {
     const serviceResult = await this.authService.login(loginDto);
-    if (serviceResult.code === 200)
+    if (serviceResult.code === 200) {
+      res.setHeader('Authorization', 'Bearer ' + serviceResult.message);
+      res.cookie('jwt', serviceResult.message, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1000, //1 hour
+      });
       return res.status(200).json(serviceResult.message);
-    else return res.status(serviceResult.code).json(serviceResult.message);
-  }
-
-  @Post('/test') //토큰 사용하여 인증하기 test
-  @UseGuards(AuthGuard())
-  authTest(@Req() req) {
-    console.log(req);
+    } else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
   @UseGuards(AuthGuard())
   @Post('logout')
   async logOut(@Req() req, @Res() res: Response) {
-    res.setHeader('Set-Cookie', this.authService.getCookieForLogOut());
+    res.cookie('jwt', '', {
+      maxAge: 0,
+    });
     return res.sendStatus(200);
   }
 }

@@ -26,7 +26,6 @@ export class AuthService {
       );
     }
     const hashedPassword = await bcrypt.hash(user.password, 10);
-
     try {
       const userExist = await this.userRepository.findBy({
         username: user.username,
@@ -84,9 +83,5 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('logIn failed');
     }
-  }
-
-  public getCookieForLogOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
   }
 }
