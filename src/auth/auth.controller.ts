@@ -17,9 +17,8 @@ export class AuthController {
       passwordCheck === undefined ||
       userType === undefined ||
       preferredLanguage == undefined
-    ) {
+    )
       return res.status(400).json('request body is wrong');
-    }
 
     const serviceResult = await this.authService.registerUser(registerDto);
     if (serviceResult.code === 200)
@@ -28,7 +27,11 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() loginDto, @Res() res: Response) {
+  async logIn(@Body() loginDto, @Res() res: Response) {
+    const { username, password } = loginDto;
+    if (username === undefined || password === undefined)
+      return res.status(400).json('request body is wrong');
+
     const serviceResult = await this.authService.login(loginDto);
     if (serviceResult.code === 200) {
       res.setHeader('Authorization', 'Bearer ' + serviceResult.message);
