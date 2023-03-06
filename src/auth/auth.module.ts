@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/lib/jwt.strategy';
@@ -10,11 +11,15 @@ import { AuthService } from './auth.service';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: 'Secret1234',
-      signOptions: {
-        expiresIn: 60 * 60, //토큰 유효 시간 (1시간)
-      },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: {
+          expiresIn: 60 * 60, //`${configService.get('JWT_EXPIRATION_TIME')}s`,
+        },
+      }),
     }),
     TypeOrmExModule.forCustomRepository([UserRepository]),
   ],

@@ -1,5 +1,3 @@
-import { UserType } from 'src/lib/enumeration/enum';
-
 export default class RegisterDto {
   username: string;
   password: string;
