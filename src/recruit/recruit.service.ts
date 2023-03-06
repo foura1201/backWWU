@@ -4,6 +4,8 @@ import { RecruitRepository } from '../repository/recruit.repository';
 
 @Injectable()
 export class RecruitService {
+  reviewRepository: any;
+  userRepository: any;
   constructor(private recruitRepository: RecruitRepository) {}
 
   async getAllRecruits(): Promise<ServiceResult> {
@@ -24,11 +26,19 @@ export class RecruitService {
     }
   }
 
-  async getRecruit(recruitId: number): Promise<ServiceResult> {
+  async getRecruit(id: number): Promise<ServiceResult> {
     try {
-      const recruit = await this.recruitRepository.findBy({ id: recruitId });
-
-      if (recruit.length === 0) {
+      const recruit = await this.recruitRepository.findOne({ where: { id } });
+      const businessId = recruit.business;
+      /*
+      const businessReview = await this.reviewRepository.findOne({
+        where: { business: businessId },
+      });
+      const businessInfo = await this.userRepository.findOne({
+        where: { id: businessId },
+      });
+      */
+      if (recruit === undefined) {
         const serviceResult: ServiceResult = {
           code: 404,
           message: 'Not Found',
@@ -38,7 +48,7 @@ export class RecruitService {
         const serviceResult: ServiceResult = {
           code: 200,
           message: 'Success!',
-          data: recruit,
+          data: [recruit],
         };
         return serviceResult;
       }

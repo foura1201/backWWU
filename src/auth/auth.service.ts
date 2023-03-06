@@ -1,14 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import RegisterDto from 'src/dto/register.dto';
 import ServiceResult from 'src/lib/serviceResult';
 import { UserRepository } from 'src/repository/user.repository';
 import * as bcrypt from 'bcrypt';
 import { UserType } from 'src/lib/enumeration/enum';
+import LoginDto from 'src/dto/login.dto';
+import { string } from 'joi';
+import { JwtService } from '@nestjs/jwt/dist';
 
 @Injectable()
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
-
+  constructor(
+    private userRepository: UserRepository,
+    private jwtService: JwtService,
+  ) {}
   public async registerUser(user: RegisterDto): Promise<ServiceResult> {
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
@@ -49,6 +59,25 @@ export class AuthService {
         '알 수 없는 오류가 발생했습니다.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async login(loginDto: LoginDto): Promise<ServiceResult> {
+    const { username, password } = loginDto;
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      //유저 토큰 생성 (Secret + Payload)
+      const payload = { username };
+      const accessToken = await this.jwtService.sign(payload);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: accessToken,
+        data: [user],
+      };
+      return serviceResult;
+    } else {
+      throw new UnauthorizedException('logIn failed');
     }
   }
 }
