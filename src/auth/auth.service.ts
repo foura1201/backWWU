@@ -10,7 +10,6 @@ import { UserRepository } from 'src/repository/user.repository';
 import * as bcrypt from 'bcrypt';
 import { UserType } from 'src/lib/enumeration/enum';
 import LoginDto from 'src/dto/login.dto';
-import { string } from 'joi';
 import { JwtService } from '@nestjs/jwt/dist';
 
 @Injectable()
