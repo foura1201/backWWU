@@ -1,8 +1,10 @@
-import { Controller, Get, Query, Param, Res } from '@nestjs/common';
+import { Controller, Get, Query, Param, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { RecruitService } from './recruit.service';
 
 @Controller('recruit')
+@UseGuards(AuthGuard())
 export class RecruitController {
   constructor(private recruitService: RecruitService) {}
 
