@@ -20,7 +20,8 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto, @Res() res: Response) {
     const serviceResult = await this.authService.login(loginDto);
-    if (serviceResult.code === 200) return res.status(200).json(serviceResult);
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.message);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
