@@ -1,10 +1,20 @@
-import { Controller, Get, Query, Param, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  Res,
+  UseGuards,
+  Body,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { RecruitService } from './recruit.service';
 
 @Controller('recruit')
-@UseGuards(AuthGuard())
+//@UseGuards(AuthGuard())
 export class RecruitController {
   constructor(private recruitService: RecruitService) {}
 
@@ -15,12 +25,15 @@ export class RecruitController {
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
+  /*
   @Get('search')
   async searchRecruit(@Query() query) {
+    let arr1, arr2, arr3, arr4, arr5;
     if (query.nickname !== undefined) {
-      const nickname = query.nickname;
+      arr1 = await this.recruitService.searchNickname(query.nickname);
     }
     if (query.recruitName !== undefined) {
+      arr2 = await this.recruitService.searchRecruitName(query.recruitName);
     }
     if (query.countryId !== undefined) {
     }
@@ -28,7 +41,30 @@ export class RecruitController {
     }
     if (query.isRecruting !== undefined) {
     }
+    let difference = arr1.filter((x) => arr2.includes(x));
   }
+*/
+  @Post('like')
+  async likeRecruit(@Body() likeDto, @Res() res: Response) {
+    const { id, userId } = likeDto;
+    const serviceResult = await this.recruitService.likeRecruit(id, userId);
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('like')
+  async cancleRecruitLike(@Body() likeDto, @Res() res: Response) {
+    const { id, userId } = likeDto;
+    const serviceResult = await this.recruitService.cancleRecruitLike(
+      id,
+      userId,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
   @Get(':id')
   async getRecruit(@Res() res: Response, @Param('id') id: number) {
     const serviceResult = await this.recruitService.getRecruit(id);
