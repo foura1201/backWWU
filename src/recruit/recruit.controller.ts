@@ -8,13 +8,14 @@ import {
   Body,
   Post,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { RecruitService } from './recruit.service';
 
 @Controller('recruit')
-//@UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 export class RecruitController {
   constructor(private recruitService: RecruitService) {}
 
@@ -45,20 +46,22 @@ export class RecruitController {
   }
 */
   @Post('like')
-  async likeRecruit(@Body() likeDto, @Res() res: Response) {
-    const { id, userId } = likeDto;
-    const serviceResult = await this.recruitService.likeRecruit(id, userId);
+  async likeRecruit(@Body() body, @Req() req, @Res() res: Response) {
+    console.log(req.user);
+    const serviceResult = await this.recruitService.likeRecruit(
+      body.id,
+      req.user,
+    );
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
   @Delete('like')
-  async cancleRecruitLike(@Body() likeDto, @Res() res: Response) {
-    const { id, userId } = likeDto;
+  async cancleRecruitLike(@Body() body, @Req() req, @Res() res: Response) {
     const serviceResult = await this.recruitService.cancleRecruitLike(
-      id,
-      userId,
+      body.id,
+      req.user,
     );
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
