@@ -1,3 +1,4 @@
+import { PayType } from 'src/lib/enumeration/enum';
 import {
   BaseEntity,
   Column,
@@ -36,7 +37,13 @@ export default class Recruit extends BaseEntity {
   location: string;
 
   @ManyToOne(() => Industry, (industry) => industry.id, { nullable: true })
-  industry: number;
+  industry: Industry;
+
+  @Column({ nullable: false, default: PayType.hourly })
+  payType: PayType;
+
+  @Column({ nullable: false, default: 0 })
+  payAmount: number;
 
   @Column({ nullable: true })
   photos: string;
