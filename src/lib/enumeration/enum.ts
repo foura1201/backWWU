@@ -13,3 +13,8 @@ export enum ReportType {
   business = 'business',
   //수정 필요
 }
+
+export enum PayType {
+  hourly = 'hourly',
+  monthly = 'monthly',
+}
