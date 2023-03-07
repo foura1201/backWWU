@@ -61,20 +61,19 @@ export class RecruitService {
     }
   }
 
-  async likeRecruit(id: number, uid: number): Promise<ServiceResult> {
+  async likeRecruit(id: number, person: User): Promise<ServiceResult> {
     try {
-      const user = uid;
       const recruit = id;
       const like = new RecruitLike();
-
+      console.log(person.id, recruit);
       const likeExist = await this.recruitLikeRepository
         .createQueryBuilder('recruitLike')
         .leftJoinAndSelect('recruitLike.person', 'user')
         .leftJoinAndSelect('recruitLike.recruit', 'recruit')
-        .where('recruitLike.person = :id', { id: user })
-        .andWhere('recruitLike.recruit = :id', { id: recruit })
+        .where('recruitLike.personId = :a', { a: person.id })
+        .andWhere('recruitLike.recruitId = :b', { b: recruit })
         .getMany();
-
+      console.log(likeExist);
       if (likeExist.length) {
         const serviceResult: ServiceResult = {
           code: 400,
@@ -84,7 +83,7 @@ export class RecruitService {
       }
 
       like.person = await this.userRepository.findOne({
-        where: { id: user },
+        where: { id: person.id },
       });
       like.recruit = await this.recruitRepository.findOne({
         where: { id: recruit },
@@ -106,16 +105,15 @@ export class RecruitService {
     }
   }
 
-  async cancleRecruitLike(id: number, uid: number): Promise<ServiceResult> {
+  async cancleRecruitLike(id: number, person: User): Promise<ServiceResult> {
     try {
-      const user = uid;
       const recruit = id;
       const deleteId = await this.recruitLikeRepository
         .createQueryBuilder('recruitLike')
         .leftJoinAndSelect('recruitLike.person', 'user')
         .leftJoinAndSelect('recruitLike.recruit', 'recruit')
-        .where('recruitLike.person = :id', { id: user })
-        .andWhere('recruitLike.recruit = :id', { id: recruit })
+        .where('recruitLike.person = :a', { a: person.id })
+        .andWhere('recruitLike.recruit = :b', { b: recruit })
         .getOne();
       await this.recruitLikeRepository.delete(deleteId.id);
       const serviceResult: ServiceResult = {
