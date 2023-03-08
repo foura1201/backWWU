@@ -2,9 +2,11 @@ import {
   BaseEntity,
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import Resume from './resume.entity';
 import User from './user.entity';
 
 @Entity()
@@ -15,7 +17,16 @@ export default class Language extends BaseEntity {
   @Column()
   language: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, cascade: true })
+  @ManyToMany(() => Resume, (resume) => resume.id, {
+    nullable: false,
+    cascade: true,
+  })
+  resumes: Resume[];
+
+  @ManyToOne(() => User, (person) => person.id, {
+    nullable: false,
+    cascade: true,
+  })
   person: User;
 
   @Column()

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
@@ -66,5 +67,42 @@ export class MyController {
       req.user,
     );
     return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Post('resume')
+  async createResume(@Body() resume, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.createResume(
+      resume,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Put('resume')
+  async modifyResume(@Body() resume, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.modifyResume(
+      resume,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('resume')
+  async deleteResume(@Body() body, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.deleteResume(
+      body.resumeId,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Get('resume')
+  async getResume(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getResume(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
   }
 }

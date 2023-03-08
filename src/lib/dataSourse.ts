@@ -1,3 +1,9 @@
+import Career from 'src/entity/career.entity';
+import Country from 'src/entity/country.entity';
+import Industry from 'src/entity/industry.entity';
+import Language from 'src/entity/language.entity';
+import Resume from 'src/entity/resume.entity';
+import User from 'src/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -12,7 +18,15 @@ export const dataSource = new DataSource({
   database: DB_DATABASE,
   synchronize: true, // 배포 시에 false로
   logging: true,
-  entities: [`${__dirname}/../entity/*.entity.{js,ts}`],
+  entities: [
+    Resume,
+    Country,
+    Industry,
+    User,
+    Career,
+    Language,
+    `${__dirname}/../entity/*.entity.{js,ts}`,
+  ],
   subscribers: [],
   migrations: [],
   namingStrategy: new SnakeNamingStrategy(),
