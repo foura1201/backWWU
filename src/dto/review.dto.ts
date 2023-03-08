@@ -1,6 +1,6 @@
 export default class ReviewDto {
-  id?: number;
+  reviewId?: number;
   rating: number;
   review: string;
-  businessId: number;
+  businessId?: number;
 }

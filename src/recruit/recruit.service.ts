@@ -175,6 +175,91 @@ export class RecruitService {
     }
   }
 
+  async modifyReview(reviewDto: ReviewDto, user: User): Promise<ServiceResult> {
+    try {
+      const myReview = await this.reviewRepository.findOne({
+        relations: { person: true, business: true },
+        where: { id: reviewDto.reviewId },
+      });
+
+      if (!myReview) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 reviewId입니다.',
+        };
+        return serviceResult;
+      }
+
+      if (myReview.person.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'Unathorized',
+        };
+        return serviceResult;
+      }
+
+      const newReview = await this.reviewRepository.create({
+        id: reviewDto.reviewId,
+        rating: reviewDto.rating,
+        review: reviewDto.review,
+        person: myReview.person,
+        business: myReview.business,
+      });
+
+      await this.reviewRepository.update({ id: newReview.id }, newReview);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(
+        '알 수 없는 오류가 발생했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteReview(reviewId: number, user: User): Promise<ServiceResult> {
+    try {
+      const myReview = await this.reviewRepository.findOne({
+        relations: { person: true, business: true },
+        where: { id: reviewId },
+      });
+
+      if (!myReview) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 reviewId입니다.',
+        };
+        return serviceResult;
+      }
+
+      if (myReview.person.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'Unathorized',
+        };
+        return serviceResult;
+      }
+
+      await this.reviewRepository.delete(reviewId);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'success!',
+        data: [],
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(
+        '알 수 없는 오류가 발생하였습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async getReview(id: number): Promise<ServiceResult> {
     try {
       const businessReview = await this.reviewRepository
