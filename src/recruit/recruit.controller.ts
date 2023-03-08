@@ -26,7 +26,8 @@ export class RecruitController {
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
-  /*
+
+  ///구현 덜함.
   @Get('search')
   async searchRecruit(@Query() query) {
     let arr1, arr2, arr3, arr4, arr5;
@@ -40,14 +41,10 @@ export class RecruitController {
     }
     if (query.industryId !== undefined) {
     }
-    if (query.isRecruting !== undefined) {
-    }
-    let difference = arr1.filter((x) => arr2.includes(x));
   }
-*/
+
   @Post('like')
   async likeRecruit(@Body() body, @Req() req, @Res() res: Response) {
-    console.log(req.user);
     const serviceResult = await this.recruitService.likeRecruit(
       body.id,
       req.user,
@@ -63,6 +60,27 @@ export class RecruitController {
       body.id,
       req.user,
     );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Post('review')
+  async createReview(@Body() body, @Req() req, @Res() res: Response) {
+    const serviceResult = await this.recruitService.createReview(
+      body,
+      req.user,
+    );
+
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Get('review/:id') //이때 id는 businessId
+  async getReview(@Res() res: Response, @Param('id') id: number) {
+    const serviceResult = await this.recruitService.getReview(id);
+
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);

@@ -6,12 +6,14 @@ import { RecruitRepository } from '../repository/recruit.repository';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserRepository } from 'src/repository/user.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
+import { ReviewRepository } from 'src/repository/review.repository';
 
 @Module({
   imports: [
     TypeOrmExModule.forCustomRepository([RecruitRepository]),
     TypeOrmExModule.forCustomRepository([UserRepository]),
     TypeOrmExModule.forCustomRepository([RecruitLikeRepository]),
+    TypeOrmExModule.forCustomRepository([ReviewRepository]),
 
     AuthModule,
   ],
