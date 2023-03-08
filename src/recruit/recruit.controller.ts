@@ -77,7 +77,7 @@ export class RecruitController {
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
-  @Get('review/:id')
+  @Get('review/:id') //이때 id는 businessId
   async getReview(@Res() res: Response, @Param('id') id: number) {
     const serviceResult = await this.recruitService.getReview(id);
 
