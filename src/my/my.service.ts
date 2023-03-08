@@ -154,6 +154,24 @@ export class MyService {
     }
   }
 
+  async getMyInfo(user: User): Promise<ServiceResult> {
+    try {
+      const myInfo = await this.userRepository.findOne({
+        relations: { country: true, industry: true },
+        where: { id: user.id },
+      });
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: [myInfo],
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async modifyMyInfo(userDto: UserDto, user: User): Promise<ServiceResult> {
     try {
       const myNewInfo = await this.userRepository.create({
@@ -177,10 +195,25 @@ export class MyService {
       };
       return serviceResult;
     } catch (error) {
-      throw new HttpException(
-        '알 수 없는 오류가 발생했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async changeLanguage(language: string, user: User): Promise<ServiceResult> {
+    try {
+      const myInfo = await this.userRepository.create({
+        id: user.id,
+        preferredLanguage: language,
+      });
+      await this.userRepository.update({ id: myInfo.id }, myInfo);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
