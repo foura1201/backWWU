@@ -5,8 +5,6 @@ import { ReviewRepository } from 'src/repository/review.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { RecruitRepository } from '../repository/recruit.repository';
 import RecruitLike from 'src/entity/recruitLike.entity';
-import { DataSource } from 'typeorm';
-import { dataSource } from 'src/lib/dataSourse';
 import { UserRepository } from 'src/repository/user.repository';
 import ReviewDto from 'src/dto/review.dto';
 import { UserType } from 'src/lib/enumeration/enum';
@@ -265,7 +263,6 @@ export class RecruitService {
         where: { id },
         relations: ['business'],
       });
-      const businessId = recruit.business.id;
 
       if (recruit === undefined) {
         const serviceResult: ServiceResult = {
