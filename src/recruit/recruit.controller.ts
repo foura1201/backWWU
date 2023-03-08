@@ -30,7 +30,7 @@ export class RecruitController {
   ///구현 덜함.
   @Get('search')
   async searchRecruit(@Query() query) {
-    let arr1, arr2, arr3, arr4, arr5;
+    let arr1, arr2, arr3, arr4;
     if (query.nickname !== undefined) {
       arr1 = await this.recruitService.searchNickname(query.nickname);
     }
