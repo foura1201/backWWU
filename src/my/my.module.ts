@@ -4,6 +4,7 @@ import { TypeOrmExModule } from 'src/lib/typeorm-ex.module';
 import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
+import { UserRepository } from 'src/repository/user.repository';
 import { MyController } from './my.controller';
 import { MyService } from './my.service';
 
@@ -12,6 +13,7 @@ import { MyService } from './my.service';
     TypeOrmExModule.forCustomRepository([RecruitRepository]),
     TypeOrmExModule.forCustomRepository([CountryRepository]),
     TypeOrmExModule.forCustomRepository([IndustryRepository]),
+    TypeOrmExModule.forCustomRepository([UserRepository]),
     AuthModule,
   ],
   controllers: [MyController],

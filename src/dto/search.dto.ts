@@ -1,4 +1,4 @@
-export default class searchDto {
+export default class SearchDto {
   nickname?: string;
   recruitName?: string;
   countryId?: number;

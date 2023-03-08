@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import RecruitDto from 'src/dto/recruit.dto';
+import UserDto from 'src/dto/user.dto';
 import Country from 'src/entity/country.entity';
 import Industry from 'src/entity/industry.entity';
 import User from 'src/entity/user.entity';
@@ -8,10 +9,12 @@ import ServiceResult from 'src/lib/serviceResult';
 import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
 export class MyService {
   constructor(
+    private userRepository: UserRepository,
     private recruitRepository: RecruitRepository,
     private countryRepository: CountryRepository,
     private industryRepository: IndustryRepository,
@@ -137,6 +140,36 @@ export class MyService {
       });
 
       await this.recruitRepository.update({ id: newRecruit.id }, newRecruit);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(
+        '알 수 없는 오류가 발생했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async modifyMyInfo(userDto: UserDto, user: User): Promise<ServiceResult> {
+    try {
+      const myNewInfo = await this.userRepository.create({
+        id: user.id,
+        preferredLanguage: userDto.preferredLanguage,
+        name: userDto.name,
+        nickname: userDto.nickname,
+        phoneNumber: userDto.phoneNumber,
+        country: userDto.country,
+        age: userDto.age,
+        location: userDto.location,
+        industry: userDto.industry,
+        profile: userDto.profile,
+      });
+
+      await this.userRepository.update({ id: myNewInfo.id }, myNewInfo);
 
       const serviceResult: ServiceResult = {
         code: 200,
