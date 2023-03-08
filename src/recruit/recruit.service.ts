@@ -213,6 +213,14 @@ export class RecruitService {
       });
       const businessId = recruit.business.id;
 
+      //review를 언제 보여줄 것인지
+      /*
+      const businessReview = await this.reviewRepository
+        .createQueryBuilder('review')
+        .leftJoinAndSelect('review.business', 'user')
+        .where('review.business = :a', { a: businessId })
+        .getMany();
+      */
       if (recruit === undefined) {
         const serviceResult: ServiceResult = {
           code: 404,
@@ -223,7 +231,7 @@ export class RecruitService {
         const serviceResult: ServiceResult = {
           code: 200,
           message: 'Success!',
-          data: [recruit],
+          data: [recruit], // businessReview],
         };
         return serviceResult;
       }
