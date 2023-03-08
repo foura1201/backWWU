@@ -29,7 +29,6 @@ export class RecruitController {
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
-  ///구현 덜함.
   @Get('search')
   async searchRecruit(@Body() searchDto, @Req() req, @Res() res: Response) {
     const serviceResult = await this.recruitService.searchRecruit(searchDto);

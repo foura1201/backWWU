@@ -39,40 +39,6 @@ export class RecruitService {
     }
   }
 
-  async searchNickname(nickname: string): Promise<object[]> {
-    try {
-      const arr = await this.recruitRepository
-        .createQueryBuilder('recruit')
-        .leftJoinAndSelect('recruit.business', 'user')
-        // .select('recruit.id')
-        .where('user.nickname = :a', { a: nickname })
-        .getMany();
-      return arr;
-    } catch (error) {
-      throw new HttpException(
-        '알 수 없는 오류가 발생했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async searchRecruitName(recruitName: string): Promise<object[]> {
-    try {
-      const arr = await this.recruitRepository
-        .createQueryBuilder('recruit')
-        .leftJoinAndSelect('recruit.business', 'user')
-        // .select('recruit.id')
-        .where('recruitName = :a', { a: recruitName })
-        .getMany();
-      return arr;
-    } catch (error) {
-      throw new HttpException(
-        '알 수 없는 오류가 발생했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   async likeRecruit(id: number, person: User): Promise<ServiceResult> {
     try {
       const recruit = id;
