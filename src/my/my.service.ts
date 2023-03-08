@@ -3,7 +3,7 @@ import RecruitDto from 'src/dto/recruit.dto';
 import Country from 'src/entity/country.entity';
 import Industry from 'src/entity/industry.entity';
 import User from 'src/entity/user.entity';
-import { PayType } from 'src/lib/enumeration/enum';
+import { PayType, UserType } from 'src/lib/enumeration/enum';
 import ServiceResult from 'src/lib/serviceResult';
 import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
@@ -22,6 +22,14 @@ export class MyService {
     user: User,
   ): Promise<ServiceResult> {
     try {
+      if (user.userType !== UserType.business) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
       const country: Country = await this.countryRepository.findOneBy({
         id: recruitDto.countryId,
       });
