@@ -31,18 +31,12 @@ export class RecruitController {
 
   ///구현 덜함.
   @Get('search')
-  async searchRecruit(@Query() query) {
-    let arr1, arr2, arr3, arr4;
-    if (query.nickname !== undefined) {
-      arr1 = await this.recruitService.searchNickname(query.nickname);
-    }
-    if (query.recruitName !== undefined) {
-      arr2 = await this.recruitService.searchRecruitName(query.recruitName);
-    }
-    if (query.countryId !== undefined) {
-    }
-    if (query.industryId !== undefined) {
-    }
+  async searchRecruit(@Body() searchDto, @Req() req, @Res() res: Response) {
+    const serviceResult = await this.recruitService.searchRecruit(searchDto);
+
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
   @Post('like')

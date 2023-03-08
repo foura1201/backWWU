@@ -44,6 +44,7 @@ export class RecruitService {
       const arr = await this.recruitRepository
         .createQueryBuilder('recruit')
         .leftJoinAndSelect('recruit.business', 'user')
+        // .select('recruit.id')
         .where('user.nickname = :a', { a: nickname })
         .getMany();
       return arr;
@@ -59,7 +60,8 @@ export class RecruitService {
     try {
       const arr = await this.recruitRepository
         .createQueryBuilder('recruit')
-        .select('recruit.id')
+        .leftJoinAndSelect('recruit.business', 'user')
+        // .select('recruit.id')
         .where('recruitName = :a', { a: recruitName })
         .getMany();
       return arr;
@@ -321,15 +323,52 @@ export class RecruitService {
     }
   }
 
-  //   async searchRecruit(searchCondition: SearchDto): Promise<ServiceResult> {
-  //     try {
-  //       if (searchCondition.nickname !== undefined) {
-  //       }
-  //     } catch (error) {
-  //       throw new HttpException(
-  //         '알 수 없는 오류가 발생했습니다.',
-  //         HttpStatus.INTERNAL_SERVER_ERROR,
-  //       );
-  //     }
-  //   }
+  async searchRecruit(searchDto: SearchDto): Promise<ServiceResult> {
+    try {
+      const nickname =
+        searchDto.nickname === undefined ? '' : searchDto.nickname;
+      const recruitName =
+        searchDto.recruitName === undefined ? '' : searchDto.recruitName;
+      const countryId =
+        searchDto.countryId === undefined ? '' : searchDto.countryId;
+      const industryId =
+        searchDto.industryId === undefined ? '' : searchDto.industryId;
+
+      const nicknameOperator = nickname === '' ? '!=' : '=';
+      const recuitNameOperator = recruitName === '' ? '!=' : '=';
+      const countryIdOperator = countryId === '' ? '!=' : '=';
+      const industryIdOperator = industryId === '' ? '!=' : '=';
+
+      const arr = await this.recruitRepository
+        .createQueryBuilder('recruit')
+        .leftJoinAndSelect('recruit.business', 'user')
+        .leftJoinAndSelect('recruit.country', 'country')
+        .leftJoinAndSelect('recruit.industry', 'industry')
+        .where(`user.nickname ${nicknameOperator} :nickname`, {
+          nickname: nickname,
+        })
+        .andWhere(`recruitName ${recuitNameOperator} :recruitName`, {
+          recruitName: recruitName,
+        })
+        .andWhere(`country.id ${countryIdOperator} :countryId`, {
+          countryId: countryId,
+        })
+        .andWhere(`industry.id ${industryIdOperator} :industryId`, {
+          industryId: industryId,
+        })
+        .getMany();
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: arr,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(
+        '알 수 없는 오류가 발생했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
