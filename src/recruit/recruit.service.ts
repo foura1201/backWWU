@@ -10,6 +10,7 @@ import { dataSource } from 'src/lib/dataSourse';
 import { UserRepository } from 'src/repository/user.repository';
 import ReviewDto from 'src/dto/review.dto';
 import { UserType } from 'src/lib/enumeration/enum';
+import SearchDto from 'src/dto/search.dto';
 
 @Injectable()
 export class RecruitService {
@@ -54,7 +55,7 @@ export class RecruitService {
     }
   }
 
-  async searchRecruitName(recruitName: string): Promise<Object[]> {
+  async searchRecruitName(recruitName: string): Promise<object[]> {
     try {
       const arr = await this.recruitRepository
         .createQueryBuilder('recruit')
@@ -234,4 +235,16 @@ export class RecruitService {
       );
     }
   }
+
+  //   async searchRecruit(searchCondition: SearchDto): Promise<ServiceResult> {
+  //     try {
+  //       if (searchCondition.nickname !== undefined) {
+  //       }
+  //     } catch (error) {
+  //       throw new HttpException(
+  //         '알 수 없는 오류가 발생했습니다.',
+  //         HttpStatus.INTERNAL_SERVER_ERROR,
+  //       );
+  //     }
+  //   }
 }

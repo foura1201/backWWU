@@ -17,6 +17,15 @@ import ServiceResult from 'src/lib/serviceResult';
 export class MyController {
   constructor(private myService: MyService) {}
 
+  @Put()
+  async modifyMyInfo(@Body() userDto, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.modifyMyInfo(
+      userDto,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
   @Post('manage')
   async createManage(@Body() manage, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.createRecruit(

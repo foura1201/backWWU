@@ -1,12 +1,8 @@
 import Country from 'src/entity/country.entity';
 import Industry from 'src/entity/industry.entity';
 
-export default class userDto {
-  id: number;
-  username: string;
-  password: string;
-  userType: string;
-  preferredLanguage: string;
+export default class UserDto {
+  preferredLanguage?: string;
   name?: string;
   nickname?: string;
   phoneNumber?: string;
