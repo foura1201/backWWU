@@ -302,7 +302,7 @@ export class RecruitService {
       const countryIdOperator = countryIds === '' ? '!=' : 'in';
       const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
-      const arr = await this.recruitRepository
+      const recruits = await this.recruitRepository
         .createQueryBuilder('recruit')
         .leftJoinAndSelect('recruit.business', 'user')
         .leftJoinAndSelect('recruit.country', 'country')
@@ -324,7 +324,7 @@ export class RecruitService {
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
-        data: arr,
+        data: recruits,
       };
       return serviceResult;
     } catch (error) {

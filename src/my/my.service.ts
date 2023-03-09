@@ -154,6 +154,32 @@ export class MyService {
     }
   }
 
+  async deleteRecruit(recruitId: number, user: User): Promise<ServiceResult> {
+    try {
+      const myRecruit = await this.recruitRepository.findOne({
+        relations: { business: true },
+        where: { id: recruitId },
+      });
+
+      if (myRecruit.business.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'UnAuthorized',
+        };
+        return serviceResult;
+      }
+
+      await this.recruitRepository.delete(recruitId);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(`error`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async getMyInfo(user: User): Promise<ServiceResult> {
     try {
       const myInfo = await this.userRepository.findOne({

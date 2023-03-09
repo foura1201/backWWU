@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -63,6 +65,19 @@ export class MyController {
   async modifyManage(@Body() manage, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.modifyRecruit(
       manage,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('manage/:id')
+  async deleteManage(
+    @Param('id') id: number,
+    @Req() req,
+    @Res() res: Response,
+  ) {
+    const serviceResult: ServiceResult = await this.myService.deleteRecruit(
+      id,
       req.user,
     );
     return res.status(serviceResult.code).json(serviceResult.message);
