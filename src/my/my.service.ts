@@ -9,6 +9,7 @@ import ServiceResult from 'src/lib/serviceResult';
 import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
+import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class MyService {
     private recruitRepository: RecruitRepository,
     private countryRepository: CountryRepository,
     private industryRepository: IndustryRepository,
+    private recruitLikeRepository: RecruitLikeRepository,
   ) {}
 
   async getRecruit(user: User): Promise<ServiceResult> {
@@ -256,6 +258,25 @@ export class MyService {
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getMyInterest(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.recruitLikeRepository
+        .createQueryBuilder('recruitLike')
+        .leftJoin('recruitLike.person', 'user')
+        .leftJoinAndSelect('recruitLike.recruit', 'recruit')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
       };
       return serviceResult;
     } catch (error) {
