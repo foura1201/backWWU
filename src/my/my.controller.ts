@@ -52,14 +52,6 @@ export class MyController {
     return res.status(serviceResult.code).json(serviceResult.message);
   }
 
-  @Get('manage')
-  async getManage(@Req() req, @Res() res: Response) {
-    const serviceResult: ServiceResult = await this.myService.getRecruit(
-      req.user,
-    );
-    res.status(200).json(serviceResult.data);
-  }
-
   @Post('manage')
   async createManage(@Body() manage, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.createRecruit(
@@ -94,6 +86,42 @@ export class MyController {
   @Get('/interested')
   async getInterest(@Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.getMyInterest(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+  @Post('ressume')
+  async createResume(@Body() resume, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.createResume(
+      resume,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Put('resume')
+  async modifyResume(@Body() resume, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.modifyResume(
+      resume,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('resume')
+  async deleteResume(@Body() body, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.deleteResume(
+      body.resumeId,
+      req.user,
+    );
+    return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Get('resume')
+  async getResume(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getResume(
       req.user,
     );
     if (serviceResult.code === 200)
