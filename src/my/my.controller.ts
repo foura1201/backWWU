@@ -52,6 +52,14 @@ export class MyController {
     return res.status(serviceResult.code).json(serviceResult.message);
   }
 
+  @Get('manage')
+  async getManage(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getRecruit(
+      req.user,
+    );
+    res.status(200).json(serviceResult.data);
+  }
+
   @Post('manage')
   async createManage(@Body() manage, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.createRecruit(
