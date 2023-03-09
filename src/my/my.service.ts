@@ -16,6 +16,7 @@ import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
 import { LanguageRepository } from 'src/repository/language.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
+import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { ResumeRepository } from 'src/repository/resume.repository';
 import { UserRepository } from 'src/repository/user.repository';
 import { In } from 'typeorm';
@@ -30,6 +31,7 @@ export class MyService {
     private languageRepository: LanguageRepository,
     private countryRepository: CountryRepository,
     private industryRepository: IndustryRepository,
+    private recruitLikeRepository: RecruitLikeRepository,
   ) {}
 
   async getRecruit(user: User): Promise<ServiceResult> {
@@ -275,6 +277,24 @@ export class MyService {
     }
   }
 
+  async getMyInterest(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.recruitLikeRepository
+        .createQueryBuilder('recruitLike')
+        .leftJoin('recruitLike.person', 'user')
+        .leftJoinAndSelect('recruitLike.recruit', 'recruit')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   async createResume(resumeDto: ResumeDto, user: User): Promise<ServiceResult> {
     try {
       if (user.userType !== UserType.person) {
