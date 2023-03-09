@@ -292,15 +292,15 @@ export class RecruitService {
         searchDto.nickname === undefined ? '' : searchDto.nickname;
       const recruitName =
         searchDto.recruitName === undefined ? '' : searchDto.recruitName;
-      const countryId =
-        searchDto.countryId === undefined ? '' : searchDto.countryId;
-      const industryId =
-        searchDto.industryId === undefined ? '' : searchDto.industryId;
+      const countryIds =
+        searchDto.countryIds === undefined ? '' : searchDto.countryIds;
+      const industryIds =
+        searchDto.industryIds === undefined ? '' : searchDto.industryIds;
 
-      const nicknameOperator = nickname === '' ? '!=' : '=';
-      const recuitNameOperator = recruitName === '' ? '!=' : '=';
-      const countryIdOperator = countryId === '' ? '!=' : '=';
-      const industryIdOperator = industryId === '' ? '!=' : '=';
+      const nicknameOperator = nickname === '' ? '!=' : 'like';
+      const recuitNameOperator = recruitName === '' ? '!=' : 'like';
+      const countryIdOperator = countryIds === '' ? '!=' : 'in';
+      const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
       const arr = await this.recruitRepository
         .createQueryBuilder('recruit')
@@ -308,16 +308,16 @@ export class RecruitService {
         .leftJoinAndSelect('recruit.country', 'country')
         .leftJoinAndSelect('recruit.industry', 'industry')
         .where(`user.nickname ${nicknameOperator} :nickname`, {
-          nickname: nickname,
+          nickname: `%${nickname}%`,
         })
         .andWhere(`recruitName ${recuitNameOperator} :recruitName`, {
-          recruitName: recruitName,
+          recruitName: `%${recruitName}%`,
         })
-        .andWhere(`country.id ${countryIdOperator} :countryId`, {
-          countryId: countryId,
+        .andWhere(`country.id ${countryIdOperator} (:countryId)`, {
+          countryId: countryIds,
         })
-        .andWhere(`industry.id ${industryIdOperator} :industryId`, {
-          industryId: industryId,
+        .andWhere(`industry.id ${industryIdOperator} (:industryId)`, {
+          industryId: industryIds,
         })
         .getMany();
 
