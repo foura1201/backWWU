@@ -20,6 +20,26 @@ export class MyService {
     private industryRepository: IndustryRepository,
   ) {}
 
+  async getRecruit(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.recruitRepository
+        .createQueryBuilder('recruit')
+        .leftJoin('recruit.business', 'user')
+        .leftJoinAndSelect('recruit.country', 'country')
+        .leftJoinAndSelect('recruit.industry', 'industry')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async createRecruit(
     recruitDto: RecruitDto,
     user: User,
