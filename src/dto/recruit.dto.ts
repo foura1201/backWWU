@@ -3,12 +3,12 @@ export default class RecruitDto {
   recruitName: string;
   recruitStart: Date;
   recruitEnd: Date;
-  countryId: number;
-  location: string;
-  industryId: number;
+  countryId?: number;
+  location?: string;
+  industryId?: number;
   descriptions: string;
   payType: string;
   payAmount: number;
-  photos: string;
-  certifications: string;
+  photos?: string;
+  certifications?: string;
 }
