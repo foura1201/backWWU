@@ -91,7 +91,7 @@ export class MyController {
     return res.status(serviceResult.code).json(serviceResult.message);
   }
 
-  @Get('/interested')
+  @Get('interested')
   async getInterest(@Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.getMyInterest(
       req.user,
@@ -100,7 +100,7 @@ export class MyController {
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
-  @Post('ressume')
+  @Post('resume')
   async createResume(@Body() resume, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.createResume(
       resume,
