@@ -8,7 +8,6 @@ import Industry from 'src/entity/industry.entity';
 import Language from 'src/entity/language.entity';
 import Resume from 'src/entity/resume.entity';
 import User from 'src/entity/user.entity';
-import { dataSource } from 'src/lib/dataSourse';
 import { PayType, UserType } from 'src/lib/enumeration/enum';
 import ServiceResult from 'src/lib/serviceResult';
 import { CareerRepository } from 'src/repository/carrer.repository';
@@ -19,7 +18,6 @@ import { RecruitRepository } from 'src/repository/recruit.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { ResumeRepository } from 'src/repository/resume.repository';
 import { UserRepository } from 'src/repository/user.repository';
-import { In } from 'typeorm';
 
 @Injectable()
 export class MyService {
