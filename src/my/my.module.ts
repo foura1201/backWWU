@@ -8,6 +8,7 @@ import { LanguageRepository } from 'src/repository/language.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { ResumeRepository } from 'src/repository/resume.repository';
+import { ReviewRepository } from 'src/repository/review.repository';
 import { UserRepository } from 'src/repository/user.repository';
 import { MyController } from './my.controller';
 import { MyService } from './my.service';
@@ -22,7 +23,7 @@ import { MyService } from './my.service';
     TypeOrmExModule.forCustomRepository([ResumeRepository]),
     TypeOrmExModule.forCustomRepository([CareerRepository]),
     TypeOrmExModule.forCustomRepository([LanguageRepository]),
-
+    TypeOrmExModule.forCustomRepository([ReviewRepository]),
     AuthModule,
   ],
   controllers: [MyController],

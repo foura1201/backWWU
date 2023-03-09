@@ -136,4 +136,14 @@ export class MyController {
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
+
+  @Get('reviewed')
+  async getReview(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getMyReview(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
 }

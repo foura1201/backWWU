@@ -17,6 +17,7 @@ import { LanguageRepository } from 'src/repository/language.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { ResumeRepository } from 'src/repository/resume.repository';
+import { ReviewRepository } from 'src/repository/review.repository';
 import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
@@ -30,6 +31,7 @@ export class MyService {
     private countryRepository: CountryRepository,
     private industryRepository: IndustryRepository,
     private recruitLikeRepository: RecruitLikeRepository,
+    private reviewRepository: ReviewRepository,
   ) {}
 
   async getRecruit(user: User): Promise<ServiceResult> {
@@ -469,6 +471,25 @@ export class MyService {
         code: 200,
         message: 'Success!',
         data: [myResume],
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getMyReview(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.reviewRepository
+        .createQueryBuilder('review')
+        .leftJoin('review.person', 'user')
+        .leftJoinAndSelect('review.business', 'business')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
       };
       return serviceResult;
     } catch (error) {
