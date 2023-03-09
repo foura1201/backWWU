@@ -5,8 +5,6 @@ import { ReviewRepository } from 'src/repository/review.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { RecruitRepository } from '../repository/recruit.repository';
 import RecruitLike from 'src/entity/recruitLike.entity';
-import { DataSource } from 'typeorm';
-import { dataSource } from 'src/lib/dataSourse';
 import { UserRepository } from 'src/repository/user.repository';
 import ReviewDto from 'src/dto/review.dto';
 import { UserType } from 'src/lib/enumeration/enum';
@@ -265,7 +263,6 @@ export class RecruitService {
         where: { id },
         relations: ['business'],
       });
-      const businessId = recruit.business.id;
 
       if (recruit === undefined) {
         const serviceResult: ServiceResult = {
@@ -295,39 +292,39 @@ export class RecruitService {
         searchDto.nickname === undefined ? '' : searchDto.nickname;
       const recruitName =
         searchDto.recruitName === undefined ? '' : searchDto.recruitName;
-      const countryId =
-        searchDto.countryId === undefined ? '' : searchDto.countryId;
-      const industryId =
-        searchDto.industryId === undefined ? '' : searchDto.industryId;
+      const countryIds =
+        searchDto.countryIds === undefined ? '' : searchDto.countryIds;
+      const industryIds =
+        searchDto.industryIds === undefined ? '' : searchDto.industryIds;
 
-      const nicknameOperator = nickname === '' ? '!=' : '=';
-      const recuitNameOperator = recruitName === '' ? '!=' : '=';
-      const countryIdOperator = countryId === '' ? '!=' : '=';
-      const industryIdOperator = industryId === '' ? '!=' : '=';
+      const nicknameOperator = nickname === '' ? '!=' : 'like';
+      const recuitNameOperator = recruitName === '' ? '!=' : 'like';
+      const countryIdOperator = countryIds === '' ? '!=' : 'in';
+      const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
-      const arr = await this.recruitRepository
+      const recruits = await this.recruitRepository
         .createQueryBuilder('recruit')
         .leftJoinAndSelect('recruit.business', 'user')
         .leftJoinAndSelect('recruit.country', 'country')
         .leftJoinAndSelect('recruit.industry', 'industry')
         .where(`user.nickname ${nicknameOperator} :nickname`, {
-          nickname: nickname,
+          nickname: `%${nickname}%`,
         })
         .andWhere(`recruitName ${recuitNameOperator} :recruitName`, {
-          recruitName: recruitName,
+          recruitName: `%${recruitName}%`,
         })
-        .andWhere(`country.id ${countryIdOperator} :countryId`, {
-          countryId: countryId,
+        .andWhere(`country.id ${countryIdOperator} (:countryId)`, {
+          countryId: countryIds,
         })
-        .andWhere(`industry.id ${industryIdOperator} :industryId`, {
-          industryId: industryId,
+        .andWhere(`industry.id ${industryIdOperator} (:industryId)`, {
+          industryId: industryIds,
         })
         .getMany();
 
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
-        data: arr,
+        data: recruits,
       };
       return serviceResult;
     } catch (error) {

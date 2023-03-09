@@ -32,6 +32,26 @@ export class MyService {
     private industryRepository: IndustryRepository,
   ) {}
 
+  async getRecruit(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.recruitRepository
+        .createQueryBuilder('recruit')
+        .leftJoin('recruit.business', 'user')
+        .leftJoinAndSelect('recruit.country', 'country')
+        .leftJoinAndSelect('recruit.industry', 'industry')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async createRecruit(
     recruitDto: RecruitDto,
     user: User,
@@ -163,6 +183,32 @@ export class MyService {
         '알 수 없는 오류가 발생했습니다.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async deleteRecruit(recruitId: number, user: User): Promise<ServiceResult> {
+    try {
+      const myRecruit = await this.recruitRepository.findOne({
+        relations: { business: true },
+        where: { id: recruitId },
+      });
+
+      if (myRecruit.business.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'UnAuthorized',
+        };
+        return serviceResult;
+      }
+
+      await this.recruitRepository.delete(recruitId);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(`error`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
