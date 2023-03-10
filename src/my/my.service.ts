@@ -1,4 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import CareerDto from 'src/dto/career.dto';
+import LanguageDto from 'src/dto/language.dto';
 import RecruitDto from 'src/dto/recruit.dto';
 import ResumeDto from 'src/dto/resume.dto';
 import UserDto from 'src/dto/user.dto';
@@ -124,7 +126,7 @@ export class MyService {
         where: { id: recruitDto.id },
       });
 
-      if (!myRecruit) {
+      if (!myRecruit || recruitDto.id === undefined) {
         const serviceResult: ServiceResult = {
           code: 400,
           message: '존재하지 않는 recruitId입니다.',
@@ -357,7 +359,7 @@ export class MyService {
         relations: { person: true },
         where: { id: resumeDto.resumeId },
       });
-      if (!myResume) {
+      if (!myResume || resumeDto.resumeId === undefined) {
         const serviceResult: ServiceResult = {
           code: 400,
           message: '존재하지 않는 recruitId입니다.',
@@ -490,6 +492,265 @@ export class MyService {
         code: 200,
         message: 'Success!',
         data: myRecruits,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async createCareer(careerDto: CareerDto, user: User): Promise<ServiceResult> {
+    try {
+      if (user.userType !== UserType.person) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+      const industry: Industry = await this.industryRepository
+        .createQueryBuilder()
+        .where('id In (:id)', { id: careerDto.industryId })
+        .getOne();
+
+      const newCareer = await this.careerRepository.create({
+        careerName: careerDto.careerName,
+        careerPeriod: careerDto.careerPeriod,
+        careerEvidence: careerDto.careerEvidence,
+        industry: industry,
+        person: user,
+      });
+
+      await this.careerRepository.manager.save(newCareer);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async modifyCareer(careerDto: CareerDto, user: User): Promise<ServiceResult> {
+    try {
+      const myCareer = await this.careerRepository.findOne({
+        relations: { person: true },
+        where: { id: careerDto.careerId },
+      });
+      if (!myCareer || careerDto.careerId === undefined) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 careerId입니다.',
+        };
+        return serviceResult;
+      }
+      if (user.userType !== UserType.person || myCareer.person.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
+      const industry: Industry = await this.industryRepository
+        .createQueryBuilder()
+        .where('id In (:id)', { id: careerDto.industryId })
+        .getOne();
+
+      const newCareer = await this.careerRepository.create({
+        id: myCareer.id,
+        careerName: careerDto.careerName,
+        careerPeriod: careerDto.careerPeriod,
+        careerEvidence: careerDto.careerEvidence,
+        industry: industry,
+        person: user,
+      });
+      await this.careerRepository.manager.save(newCareer);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteCareer(careerId: number, user: User): Promise<ServiceResult> {
+    try {
+      const myCareer = await this.careerRepository.findOne({
+        relations: { person: true },
+        where: { id: careerId },
+      });
+
+      if (!myCareer) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 careerId입니다.',
+        };
+        return serviceResult;
+      }
+      if (user.userType !== UserType.person || myCareer.person.id !== user.id) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
+      await this.careerRepository.delete(careerId);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getCareer(user: User): Promise<ServiceResult> {
+    try {
+      const myCareers = await this.careerRepository
+        .createQueryBuilder('career')
+        .leftJoin('career.person', 'user')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myCareers,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async createLanguage(
+    languageDto: LanguageDto,
+    user: User,
+  ): Promise<ServiceResult> {
+    try {
+      if (user.userType !== UserType.person) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
+      const newLanguage = await this.languageRepository.create({
+        language: languageDto.language,
+        level: languageDto.level,
+        person: user,
+      });
+
+      await this.languageRepository.manager.save(newLanguage);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async modifyLanguage(
+    languageDto: LanguageDto,
+    user: User,
+  ): Promise<ServiceResult> {
+    try {
+      const myLanguage = await this.languageRepository.findOne({
+        relations: { person: true },
+        where: { id: languageDto.languageId },
+      });
+      if (!myLanguage || languageDto.languageId === undefined) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 languageId입니다.',
+        };
+        return serviceResult;
+      }
+      if (
+        user.userType !== UserType.person ||
+        myLanguage.person.id !== user.id
+      ) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
+      const newLanguage = await this.languageRepository.create({
+        id: myLanguage.id,
+        language: languageDto.language,
+        level: languageDto.level,
+        person: user,
+      });
+      await this.languageRepository.manager.save(newLanguage);
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteLanguage(languageId: number, user: User): Promise<ServiceResult> {
+    try {
+      const myLanguage = await this.languageRepository.findOne({
+        relations: { person: true },
+        where: { id: languageId },
+      });
+
+      if (!myLanguage) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '존재하지 않는 languageId입니다.',
+        };
+        return serviceResult;
+      }
+      if (
+        user.userType !== UserType.person ||
+        myLanguage.person.id !== user.id
+      ) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: '권한이 없습니다',
+        };
+        return serviceResult;
+      }
+
+      await this.languageRepository.delete(languageId);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getLanguage(user: User): Promise<ServiceResult> {
+    try {
+      const myLanguages = await this.languageRepository
+        .createQueryBuilder('language')
+        .leftJoin('language.person', 'user')
+        .where('user.id = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myLanguages,
       };
       return serviceResult;
     } catch (error) {
