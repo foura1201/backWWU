@@ -11,7 +11,9 @@ export class BoardService {
 
   async getAllPost(): Promise<ServiceResult> {
     try {
-      const data = await this.postRepository.find();
+      const data = await this.postRepository.find({
+        relations: { person: true },
+      });
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
@@ -25,7 +27,10 @@ export class BoardService {
 
   async getPost(id: number): Promise<ServiceResult> {
     try {
-      const data = await this.postRepository.findOneBy({ id: id });
+      const data = await this.postRepository.findOne({
+        relations: { person: true },
+        where: { id: id },
+      });
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
