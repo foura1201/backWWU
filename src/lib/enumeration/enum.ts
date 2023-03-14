@@ -10,8 +10,13 @@ export enum PostType {
 }
 
 export enum ReportType {
-  business = 'business',
-  //수정 필요
+  slander = 'slander', //비방, 비하, 욕설
+  illegal = 'illegal', //불법
+  obscene = 'obscene', //음란
+  youthHazardous = 'youthHazardous', //청소년 유해
+  personalInfo = 'personalInfo', //개인정보
+  copyright = 'copyright', //저작권 침해
+  publicity = 'publicity', //홍보성
 }
 
 export enum PayType {

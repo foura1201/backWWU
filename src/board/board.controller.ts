@@ -28,6 +28,14 @@ export class BoardController {
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
+  @Post('work/report')
+  async reportPost(@Body() body, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.boardService.reportPost(
+      body,
+      req.user,
+    );
+    return res.status(200).json(serviceResult.message);
+  }
   @Get('work/:id')
   async getPost(@Param('id') id: number, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.boardService.getPost(id);
@@ -108,6 +116,15 @@ export class BoardController {
     if (serviceResult.code === 200)
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Post('work/comment/report')
+  async reportComment(@Body() body, @Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.boardService.reportComment(
+      body,
+      req.user,
+    );
+    return res.status(200).json(serviceResult.message);
   }
 
   @Delete('work/:id')
