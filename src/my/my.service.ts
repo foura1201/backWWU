@@ -456,7 +456,7 @@ export class MyService {
     }
   }
 
-  async getResume(user: User): Promise<ServiceResult> {
+  async getAllResumes(user: User): Promise<ServiceResult> {
     try {
       const myResume = await this.resumeRepository
         .createQueryBuilder('resume')
@@ -477,6 +477,41 @@ export class MyService {
       return serviceResult;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getResume(id: number, user: User): Promise<ServiceResult> {
+    try {
+      const resume = await this.resumeRepository
+        .createQueryBuilder('resume')
+        .leftJoinAndSelect('resume.person', 'user')
+        .leftJoinAndSelect('resume.desiredCountry', 'country')
+        .leftJoinAndSelect('resume.desiredIndustry', 'industry')
+        .leftJoinAndSelect('resume.career', 'career')
+        .leftJoinAndSelect('resume.language', 'language')
+        .where('resume.person = :a', { a: user.id })
+        .andWhere('resume.id = :b', { b: id })
+        .getOne();
+
+      if (resume === undefined) {
+        const serviceResult: ServiceResult = {
+          code: 404,
+          message: 'Not Found',
+        };
+        return serviceResult;
+      } else {
+        const serviceResult: ServiceResult = {
+          code: 200,
+          message: 'Success!',
+          data: [resume], // businessReview],
+        };
+        return serviceResult;
+      }
+    } catch (error) {
+      throw new HttpException(
+        '알 수 없는 오류가 발생했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
