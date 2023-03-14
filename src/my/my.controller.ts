@@ -129,8 +129,19 @@ export class MyController {
   }
 
   @Get('resume')
-  async getResume(@Req() req, @Res() res: Response) {
+  async getAllResumes(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getAllResumes(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Get('resume/:id')
+  async getResume(@Param('id') id: number, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.getResume(
+      id,
       req.user,
     );
     if (serviceResult.code === 200)
