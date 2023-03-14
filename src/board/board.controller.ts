@@ -68,6 +68,48 @@ export class BoardController {
     return res.status(200).json(serviceResult.message);
   }
 
+  @Post('work/like')
+  async likePost(@Body() body, @Req() req, @Res() res) {
+    const serviceResult = await this.boardService.likePost(
+      body.postId,
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('work/like')
+  async canclePostLike(@Body() body, @Req() req, @Res() res: Response) {
+    console.log(body.postId);
+    const serviceResult = await this.boardService.canclePostLike(
+      body.postId,
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Post('work/comment')
+  async createComment(@Body() body, @Req() req, @Res() res) {
+    const serviceResult = await this.boardService.createComment(body, req.user);
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
+  @Delete('work/comment')
+  async deleteComment(@Body() body, @Req() req, @Res() res) {
+    const serviceResult = await this.boardService.deleteComment(
+      body.commentId,
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
   @Delete('work/:id')
   async deletePost(@Param('id') id: number, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.boardService.deletePost(
