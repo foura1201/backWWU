@@ -12,6 +12,9 @@ import { PostRepository } from 'src/repository/post.repository';
 import { PostLikeRepository } from 'src/repository/postLike.repository';
 import { PostReportRepository } from 'src/repository/postReport.repository';
 import { UserRepository } from 'src/repository/user.repository';
+import ReportDto from 'src/dto/report.dto';
+import PostReport from 'src/entity/postReport.entity';
+import CommentReport from 'src/entity/commentReport.entity';
 
 @Injectable()
 export class BoardService {
@@ -319,6 +322,69 @@ export class BoardService {
         '알 수 없는 오류가 발생하였습니다.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async reportPost(reportDto: ReportDto, user: User): Promise<ServiceResult> {
+    try {
+      if (user.userType === UserType.business) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'UnAuthorized',
+        };
+        return serviceResult;
+      }
+
+      const post = await this.postRepository.findOne({
+        where: { id: reportDto.id },
+      });
+
+      const newReport = new PostReport();
+      newReport.reportType = reportDto.reportType;
+      newReport.post = post;
+
+      await this.postReportRepository.insert(newReport);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async reportComment(
+    reportDto: ReportDto,
+    user: User,
+  ): Promise<ServiceResult> {
+    try {
+      if (user.userType === UserType.business) {
+        const serviceResult: ServiceResult = {
+          code: 401,
+          message: 'UnAuthorized',
+        };
+        return serviceResult;
+      }
+
+      const comment = await this.commentRepository.findOne({
+        where: { id: reportDto.id },
+      });
+
+      const newReport = new CommentReport();
+      newReport.reportType = reportDto.reportType;
+      newReport.comment = comment;
+
+      await this.commentReportRepository.insert(newReport);
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
