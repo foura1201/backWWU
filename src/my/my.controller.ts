@@ -232,4 +232,23 @@ export class MyController {
       return res.status(200).json(serviceResult.data);
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
+
+  @Get('liked')
+  async getLikedPost(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getLikedPost(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+  @Get('commented')
+  async getCommentedPost(@Req() req, @Res() res: Response) {
+    const serviceResult: ServiceResult = await this.myService.getCommentedPost(
+      req.user,
+    );
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
 }

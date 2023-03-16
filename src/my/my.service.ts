@@ -13,9 +13,11 @@ import User from 'src/entity/user.entity';
 import { PayType, UserType } from 'src/lib/enumeration/enum';
 import ServiceResult from 'src/lib/serviceResult';
 import { CareerRepository } from 'src/repository/carrer.repository';
+import { CommentRepository } from 'src/repository/comment.repository';
 import { CountryRepository } from 'src/repository/country.repository';
 import { IndustryRepository } from 'src/repository/industry.repository';
 import { LanguageRepository } from 'src/repository/language.repository';
+import { PostLikeRepository } from 'src/repository/postLike.repository';
 import { RecruitRepository } from 'src/repository/recruit.repository';
 import { RecruitLikeRepository } from 'src/repository/recruitLike.repository';
 import { ResumeRepository } from 'src/repository/resume.repository';
@@ -34,6 +36,8 @@ export class MyService {
     private industryRepository: IndustryRepository,
     private recruitLikeRepository: RecruitLikeRepository,
     private reviewRepository: ReviewRepository,
+    private postLikeRepository: PostLikeRepository,
+    private commentRepository: CommentRepository,
   ) {}
 
   async getRecruit(user: User): Promise<ServiceResult> {
@@ -786,6 +790,44 @@ export class MyService {
         code: 200,
         message: 'Success!',
         data: myLanguages,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getLikedPost(user: User): Promise<ServiceResult> {
+    try {
+      const likedPosts = await this.postLikeRepository
+        .createQueryBuilder('postLike')
+        .leftJoin('postLike.person', 'user')
+        .leftJoinAndSelect('postLike.post', 'post')
+        .where('postLike.person = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: likedPosts,
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getCommentedPost(user: User): Promise<ServiceResult> {
+    try {
+      const myRecruits = await this.commentRepository
+        .createQueryBuilder('comment')
+        .leftJoin('comment.person', 'person')
+        .leftJoinAndSelect('comment.post', 'post')
+        .where('comment.person = :id', { id: user.id })
+        .getMany();
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: myRecruits,
       };
       return serviceResult;
     } catch (error) {
