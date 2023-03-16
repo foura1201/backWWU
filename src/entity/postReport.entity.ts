@@ -18,8 +18,8 @@ export default class PostReport extends BaseEntity {
   @Column({ nullable: false })
   reportType: ReportType;
 
-  //@ManyToOne(() => User, (user) => user.id, { nullable: false })
-  //person: User;
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
+  person: User;
 
   @ManyToOne(() => Post, (post) => post.id, { nullable: false })
   post: Post;
