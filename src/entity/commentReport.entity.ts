@@ -18,8 +18,8 @@ export default class CommentReport extends BaseEntity {
   @Column({ nullable: false })
   reportType: ReportType;
 
-  //@ManyToOne(() => User, (user) => user.id, { nullable: false })
-  //person: User;
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
+  person: User;
 
   @ManyToOne(() => Comment, (comment) => comment.id, { nullable: false })
   comment: Comment;

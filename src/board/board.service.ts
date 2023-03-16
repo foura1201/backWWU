@@ -12,9 +12,11 @@ import { PostRepository } from 'src/repository/post.repository';
 import { PostLikeRepository } from 'src/repository/postLike.repository';
 import { PostReportRepository } from 'src/repository/postReport.repository';
 import { UserRepository } from 'src/repository/user.repository';
-import ReportDto from 'src/dto/report.dto';
+import ReportDto from 'src/dto/commentReport.dto';
 import PostReport from 'src/entity/postReport.entity';
 import CommentReport from 'src/entity/commentReport.entity';
+import PostReportDto from 'src/dto/postReport';
+import CommentReportDto from 'src/dto/commentReport.dto';
 
 @Injectable()
 export class BoardService {
@@ -325,7 +327,10 @@ export class BoardService {
     }
   }
 
-  async reportPost(reportDto: ReportDto, user: User): Promise<ServiceResult> {
+  async reportPost(
+    reportDto: PostReportDto,
+    user: User,
+  ): Promise<ServiceResult> {
     try {
       if (user.userType === UserType.business) {
         const serviceResult: ServiceResult = {
@@ -336,12 +341,29 @@ export class BoardService {
       }
 
       const post = await this.postRepository.findOne({
-        where: { id: reportDto.id },
+        where: { id: reportDto.postId },
       });
+
+      const reportExist = await this.postReportRepository
+        .createQueryBuilder('postReport')
+        .leftJoinAndSelect('postReport.person', 'user')
+        .leftJoinAndSelect('postReport.post', 'post')
+        .where('postReport.person = :a', { a: user.id })
+        .andWhere('postReport.post = :b', { b: post.id })
+        .getMany();
+
+      if (reportExist.length) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: 'Report is already exist.',
+        };
+        return serviceResult;
+      }
 
       const newReport = new PostReport();
       newReport.reportType = reportDto.reportType;
       newReport.post = post;
+      newReport.person = user;
 
       await this.postReportRepository.insert(newReport);
 
@@ -356,7 +378,7 @@ export class BoardService {
   }
 
   async reportComment(
-    reportDto: ReportDto,
+    reportDto: CommentReportDto,
     user: User,
   ): Promise<ServiceResult> {
     try {
@@ -369,12 +391,29 @@ export class BoardService {
       }
 
       const comment = await this.commentRepository.findOne({
-        where: { id: reportDto.id },
+        where: { id: reportDto.commentId },
       });
+
+      const reportExist = await this.commentReportRepository
+        .createQueryBuilder('commentReport')
+        .leftJoinAndSelect('commentReport.person', 'user')
+        .leftJoinAndSelect('commentReport.comment', 'comment')
+        .where('commentReport.person = :a', { a: user.id })
+        .andWhere('commentReport.comment = :b', { b: comment.id })
+        .getMany();
+
+      if (reportExist.length) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: 'Report is already exist.',
+        };
+        return serviceResult;
+      }
 
       const newReport = new CommentReport();
       newReport.reportType = reportDto.reportType;
       newReport.comment = comment;
+      newReport.person = user;
 
       await this.commentReportRepository.insert(newReport);
 
