@@ -99,6 +99,14 @@ export class BoardController {
     else return res.status(serviceResult.code).json(serviceResult.message);
   }
 
+  @Get('work/comment/:id')
+  async getComment(@Param('id') id: number, @Req() req, @Res() res) {
+    const serviceResult = await this.boardService.getComment(id);
+    if (serviceResult.code === 200)
+      return res.status(200).json(serviceResult.data);
+    else return res.status(serviceResult.code).json(serviceResult.message);
+  }
+
   @Post('work/comment')
   async createComment(@Body() body, @Req() req, @Res() res) {
     const serviceResult = await this.boardService.createComment(body, req.user);
