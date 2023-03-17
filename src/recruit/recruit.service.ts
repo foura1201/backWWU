@@ -304,6 +304,28 @@ export class RecruitService {
       const countryIdOperator = countryIds === '' ? '!=' : 'in';
       const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
+      if (searchDto.searchString === undefined) {
+        const recruits = await this.recruitRepository
+          .createQueryBuilder('recruit')
+          .leftJoinAndSelect('recruit.business', 'user')
+          .leftJoinAndSelect('recruit.country', 'country')
+          .leftJoinAndSelect('recruit.industry', 'industry')
+          .where(`country.id ${countryIdOperator} (:countryId)`, {
+            countryId: countryIds,
+          })
+          .andWhere(`industry.id ${industryIdOperator} (:industryId)`, {
+            industryId: industryIds,
+          })
+          .getMany();
+
+        const serviceResult: ServiceResult = {
+          code: 200,
+          message: 'Success!',
+          data: recruits,
+        };
+        return serviceResult;
+      }
+
       const recruits = await this.recruitRepository
         .createQueryBuilder('recruit')
         .leftJoinAndSelect('recruit.business', 'user')
