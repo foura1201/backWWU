@@ -336,7 +336,7 @@ export class MyService {
 
       const newResume = await new Resume();
       newResume.person = user;
-      newResume.catchPhrase = resumeDto.catchphrase;
+      newResume.catchPhrase = resumeDto.catchPhrase;
       newResume.introduction = resumeDto.introduction;
       newResume.desiredIndustry = industries;
       newResume.desiredCountry = countries;
@@ -404,7 +404,7 @@ export class MyService {
       const newResume = await new Resume();
       newResume.id = resumeDto.resumeId;
       newResume.person = user;
-      newResume.catchPhrase = resumeDto.catchphrase;
+      newResume.catchPhrase = resumeDto.catchPhrase;
       newResume.introduction = resumeDto.introduction;
       newResume.desiredIndustry = industries;
       newResume.desiredCountry = countries;

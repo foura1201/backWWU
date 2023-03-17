@@ -3,7 +3,7 @@ import User from 'src/entity/user.entity';
 export default class ResumeDto {
   resumeId?: number;
   person: User;
-  catchphrase: string;
+  catchPhrase: string;
   introduction: string;
   desiredIndustry?: number[];
   desiredCountry?: number[];
