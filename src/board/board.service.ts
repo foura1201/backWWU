@@ -265,6 +265,25 @@ export class BoardService {
     }
   }
 
+  async getComment(postId: number): Promise<ServiceResult> {
+    try {
+      const comments = await this.commentRepository
+        .createQueryBuilder('comment')
+        .leftJoin('comment.post', 'post')
+        .where('post.id = :id', { id: postId })
+        .getMany();
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success',
+        data: [comments],
+      };
+      return serviceResult;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async createComment(
     commentDto: CommentDto,
     user: User,
