@@ -261,7 +261,7 @@ export class RecruitService {
     try {
       const recruit = await this.recruitRepository.findOne({
         where: { id },
-        relations: ['business'],
+        relations: { business: true, country: true, industry: true },
       });
 
       if (recruit === undefined) {
@@ -270,14 +270,14 @@ export class RecruitService {
           message: 'Not Found',
         };
         return serviceResult;
-      } else {
-        const serviceResult: ServiceResult = {
-          code: 200,
-          message: 'Success!',
-          data: [recruit], // businessReview],
-        };
-        return serviceResult;
       }
+
+      const serviceResult: ServiceResult = {
+        code: 200,
+        message: 'Success!',
+        data: [recruit], // businessReview],
+      };
+      return serviceResult;
     } catch (error) {
       throw new HttpException(
         '알 수 없는 오류가 발생했습니다.',
