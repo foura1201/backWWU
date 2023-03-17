@@ -21,7 +21,9 @@ export class RecruitService {
 
   async getAllRecruits(): Promise<ServiceResult> {
     try {
-      const recruitList = await this.recruitRepository.find();
+      const recruitList = await this.recruitRepository.find({
+        relations: { business: true, country: true, industry: true },
+      });
 
       const serviceResult: ServiceResult = {
         code: 200,
@@ -289,9 +291,9 @@ export class RecruitService {
   async searchRecruit(searchDto: SearchDto): Promise<ServiceResult> {
     try {
       const nickname =
-        searchDto.nickname === undefined ? '' : searchDto.nickname;
+        searchDto.searchString === undefined ? '' : searchDto.searchString;
       const recruitName =
-        searchDto.recruitName === undefined ? '' : searchDto.recruitName;
+        searchDto.searchString === undefined ? '' : searchDto.searchString;
       const countryIds =
         searchDto.countryIds === undefined ? '' : searchDto.countryIds;
       const industryIds =
@@ -310,7 +312,7 @@ export class RecruitService {
         .where(`user.nickname ${nicknameOperator} :nickname`, {
           nickname: `%${nickname}%`,
         })
-        .andWhere(`recruitName ${recuitNameOperator} :recruitName`, {
+        .orWhere(`recruitName ${recuitNameOperator} :recruitName`, {
           recruitName: `%${recruitName}%`,
         })
         .andWhere(`country.id ${countryIdOperator} (:countryId)`, {
@@ -328,10 +330,7 @@ export class RecruitService {
       };
       return serviceResult;
     } catch (error) {
-      throw new HttpException(
-        '알 수 없는 오류가 발생했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

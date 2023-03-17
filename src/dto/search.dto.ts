@@ -1,6 +1,5 @@
 export default class SearchDto {
-  nickname?: string;
-  recruitName?: string;
+  searchString: string;
   countryIds?: number[];
   industryIds?: number[];
 }
