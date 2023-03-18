@@ -290,21 +290,22 @@ export class RecruitService {
 
   async searchRecruit(searchDto: SearchDto): Promise<ServiceResult> {
     try {
-      const nickname =
-        searchDto.searchString === undefined ? '' : searchDto.searchString;
-      const recruitName =
+      const searchString =
         searchDto.searchString === undefined ? '' : searchDto.searchString;
       const countryIds =
-        searchDto.countryIds === undefined ? '' : searchDto.countryIds;
+        searchDto.countryIds === undefined || !searchDto.countryIds.length
+          ? ''
+          : searchDto.countryIds;
       const industryIds =
-        searchDto.industryIds === undefined ? '' : searchDto.industryIds;
+        searchDto.industryIds === undefined || !searchDto.industryIds.length
+          ? ''
+          : searchDto.industryIds;
 
-      const nicknameOperator = nickname === '' ? '!=' : 'like';
-      const recuitNameOperator = recruitName === '' ? '!=' : 'like';
+      const searchStringOperator = searchString === '' ? '!=' : 'like';
       const countryIdOperator = countryIds === '' ? '!=' : 'in';
       const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
-      if (searchDto.searchString === undefined) {
+      if (searchString === '') {
         const recruits = await this.recruitRepository
           .createQueryBuilder('recruit')
           .leftJoinAndSelect('recruit.business', 'user')
@@ -331,11 +332,11 @@ export class RecruitService {
         .leftJoinAndSelect('recruit.business', 'user')
         .leftJoinAndSelect('recruit.country', 'country')
         .leftJoinAndSelect('recruit.industry', 'industry')
-        .where(`user.nickname ${nicknameOperator} :nickname`, {
-          nickname: `%${nickname}%`,
+        .where(`user.nickname ${searchStringOperator} :nickname`, {
+          nickname: `%${searchString}%`,
         })
-        .orWhere(`recruitName ${recuitNameOperator} :recruitName`, {
-          recruitName: `%${recruitName}%`,
+        .orWhere(`recruitName ${searchStringOperator} :recruitName`, {
+          recruitName: `%${searchString}%`,
         })
         .andWhere(`country.id ${countryIdOperator} (:countryId)`, {
           countryId: countryIds,
