@@ -295,16 +295,20 @@ export class RecruitService {
       const recruitName =
         searchDto.searchString === undefined ? '' : searchDto.searchString;
       const countryIds =
-        searchDto.countryIds === undefined ? '' : searchDto.countryIds;
+        searchDto.countryIds === undefined || !searchDto.countryIds.length
+          ? ''
+          : searchDto.countryIds;
       const industryIds =
-        searchDto.industryIds === undefined ? '' : searchDto.industryIds;
+        searchDto.industryIds === undefined || !searchDto.industryIds.length
+          ? ''
+          : searchDto.industryIds;
 
       const nicknameOperator = nickname === '' ? '!=' : 'like';
       const recuitNameOperator = recruitName === '' ? '!=' : 'like';
       const countryIdOperator = countryIds === '' ? '!=' : 'in';
       const industryIdOperator = industryIds === '' ? '!=' : 'in';
 
-      if (searchDto.searchString === undefined) {
+      if (searchDto.searchString === (undefined || '')) {
         const recruits = await this.recruitRepository
           .createQueryBuilder('recruit')
           .leftJoinAndSelect('recruit.business', 'user')
