@@ -44,11 +44,12 @@ export class MyService {
     try {
       const myRecruits = await this.recruitRepository
         .createQueryBuilder('recruit')
-        .leftJoin('recruit.business', 'user')
+        .leftJoinAndSelect('recruit.business', 'user')
         .leftJoinAndSelect('recruit.country', 'country')
         .leftJoinAndSelect('recruit.industry', 'industry')
         .where('user.id = :id', { id: user.id })
         .getMany();
+
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
