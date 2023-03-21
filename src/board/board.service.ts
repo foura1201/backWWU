@@ -47,10 +47,39 @@ export class BoardService {
 
   async getPost(id: number): Promise<ServiceResult> {
     try {
-      const data = await this.postRepository.findOne({
+      const post = await this.postRepository.findOne({
         relations: { person: true },
         where: { id: id },
       });
+
+      post.views += 1;
+
+      const comments = await this.commentRepository
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.person', 'user')
+        .leftJoin('comment.post', 'post')
+        .where('post.id = :id', { id: id })
+        .getMany();
+
+      const likes = await this.postLikeRepository.count();
+
+      const newData = await this.postRepository.create({
+        id: id,
+        person: post.person,
+        postType: PostType.work,
+        title: post.title,
+        contents: post.contents,
+        views: post.views,
+      });
+
+      await this.postRepository.update({ id: id }, newData);
+
+      const data = {
+        post,
+        comments,
+        likes,
+      };
+
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
