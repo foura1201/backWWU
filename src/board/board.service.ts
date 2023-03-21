@@ -33,6 +33,7 @@ export class BoardService {
     try {
       const data = await this.postRepository.find({
         relations: { person: true },
+        order: { writedAt: 'DESC' },
       });
       const serviceResult: ServiceResult = {
         code: 200,
