@@ -32,12 +32,12 @@ export class BoardService {
 
   async getAllPost(): Promise<ServiceResult> {
     try {
-      const posts = await this.postRepository.find({
+      const post = await this.postRepository.find({
         relations: { person: true },
         order: { writedAt: 'DESC' },
       });
 
-      const comments = await this.commentRepository
+      const comment = await this.commentRepository
         .createQueryBuilder('comment')
         .leftJoin('comment.post', 'post')
         .select('post.id', 'postId')
@@ -46,7 +46,7 @@ export class BoardService {
         .orderBy('postId', 'DESC')
         .getRawMany();
 
-      const likes = await this.postLikeRepository
+      const like = await this.postLikeRepository
         .createQueryBuilder('postLike')
         .leftJoin('postLike.post', 'post')
         .select('post.id', 'postId')
@@ -57,24 +57,14 @@ export class BoardService {
 
       const data: object[] = [];
 
-      for (const index in posts) {
-        const post = posts[index];
-        const comment = comments[index].comments;
-        const like = likes[index].likes;
-        if (
-          post.id !== comments[index].postId ||
-          post.id !== likes[index].postId
-        ) {
-          const serviceResult: ServiceResult = {
-            code: 500,
-            message: 'Internal Server Error',
-          };
-          return serviceResult;
-        }
+      for (const index in post) {
+        const posts = post[index];
+        const comments = comment[index].comments;
+        const likes = like[index].likes;
         const postDto = {
-          post,
-          comment,
-          like,
+          posts,
+          comments,
+          likes,
         };
         data.push(postDto);
       }
