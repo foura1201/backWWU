@@ -33,10 +33,10 @@ export class BoardService {
   async getAllPost(): Promise<ServiceResult> {
     try {
       const post = await this.postRepository.find({
-        relations: { person: true },
+        relations: { person: true, comments: true, likes: true },
         order: { writedAt: 'DESC' },
       });
-
+      /*
       const comment = await this.commentRepository
         .createQueryBuilder('comment')
         .leftJoin('comment.post', 'post')
@@ -68,11 +68,11 @@ export class BoardService {
         };
         data.push(postDto);
       }
-
+      */
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
-        data: data,
+        data: post,
       };
       return serviceResult;
     } catch (error) {
@@ -83,12 +83,18 @@ export class BoardService {
   async getPost(id: number): Promise<ServiceResult> {
     try {
       const post = await this.postRepository.findOne({
-        relations: { person: true },
+        relations: { person: true, comments: true, likes: true },
         where: { id: id },
       });
-
+      if (!post) {
+        const serviceResult: ServiceResult = {
+          code: 400,
+          message: 'post is not exist',
+        };
+        return serviceResult;
+      }
       post.views += 1;
-
+      /*
       const comments = await this.commentRepository
         .createQueryBuilder('comment')
         .leftJoinAndSelect('comment.person', 'user')
@@ -97,7 +103,7 @@ export class BoardService {
         .getMany();
 
       const likes = await this.postLikeRepository.count();
-
+      */
       const newData = await this.postRepository.create({
         id: id,
         person: post.person,
@@ -108,17 +114,17 @@ export class BoardService {
       });
 
       await this.postRepository.update({ id: id }, newData);
-
+      /*
       const data = {
         post,
         comments,
         likes,
       };
-
+      */
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
-        data: [data],
+        data: [post],
       };
       return serviceResult;
     } catch (error) {

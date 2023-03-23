@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import Comment from './comment.entity';
+import PostLike from './postLike.entity';
 import User from './user.entity';
 
 @Entity()
@@ -31,4 +34,10 @@ export default class Post extends BaseEntity {
 
   @Column({ default: 0 })
   views: number;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
+
+  @OneToMany(() => PostLike, (like) => like.post)
+  likes: PostLike[];
 }
