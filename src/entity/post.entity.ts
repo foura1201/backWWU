@@ -23,7 +23,7 @@ export default class Post extends BaseEntity {
   @Column({ nullable: false })
   title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'text' })
   contents: string;
 
   @CreateDateColumn()
