@@ -17,6 +17,7 @@ import PostReport from 'src/entity/postReport.entity';
 import CommentReport from 'src/entity/commentReport.entity';
 import PostReportDto from 'src/dto/postReport';
 import CommentReportDto from 'src/dto/commentReport.dto';
+import getPostDto from 'src/dto/getPost.dto';
 
 @Injectable()
 export class BoardService {
@@ -31,10 +32,53 @@ export class BoardService {
 
   async getAllPost(): Promise<ServiceResult> {
     try {
-      const data = await this.postRepository.find({
+      const posts = await this.postRepository.find({
         relations: { person: true },
         order: { writedAt: 'DESC' },
       });
+
+      const comments = await this.commentRepository
+        .createQueryBuilder('comment')
+        .leftJoin('comment.post', 'post')
+        .select('post.id', 'postId')
+        .addSelect('COUNT(*)', 'comments')
+        .groupBy('postId')
+        .orderBy('postId', 'DESC')
+        .getRawMany();
+
+      const likes = await this.postLikeRepository
+        .createQueryBuilder('postLike')
+        .leftJoin('postLike.post', 'post')
+        .select('post.id', 'postId')
+        .addSelect('COUNT(*)', 'likes')
+        .groupBy('postId')
+        .orderBy('postId', 'DESC')
+        .getRawMany();
+
+      const data: object[] = [];
+
+      for (const index in posts) {
+        const post = posts[index];
+        const comment = comments[index].comments;
+        const like = likes[index].likes;
+        if (
+          post.id !== comments[index].postId ||
+          post.id !== likes[index].postId
+        ) {
+          const serviceResult: ServiceResult = {
+            code: 500,
+            message: 'Internal Server Error',
+          };
+          return serviceResult;
+        }
+        const postDto = {
+          post,
+          comment,
+          like,
+        };
+        data.push(postDto);
+      }
+
       const serviceResult: ServiceResult = {
         code: 200,
         message: 'Success!',
