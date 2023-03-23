@@ -41,13 +41,9 @@ export class MyController {
   }
 
   @Put('changeLanguage')
-  async changeLanguage(
-    @Body() preferredLanguage,
-    @Req() req,
-    @Res() res: Response,
-  ) {
+  async changeLanguage(@Body() body, @Req() req, @Res() res: Response) {
     const serviceResult: ServiceResult = await this.myService.changeLanguage(
-      preferredLanguage,
+      body.preferredLanguage,
       req.user,
     );
     return res.status(serviceResult.code).json(serviceResult.message);
