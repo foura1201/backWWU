@@ -33,7 +33,14 @@ export class BoardService {
   async getAllPost(): Promise<ServiceResult> {
     try {
       const post = await this.postRepository.find({
-        relations: { person: true, comments: true, likes: true },
+        relations: {
+          person: {
+            industry: true,
+            country: true,
+          },
+          comments: true,
+          likes: true,
+        },
         order: { writedAt: 'DESC' },
       });
       /*
@@ -83,7 +90,14 @@ export class BoardService {
   async getPost(id: number): Promise<ServiceResult> {
     try {
       const post = await this.postRepository.findOne({
-        relations: { person: true, comments: true, likes: true },
+        relations: {
+          person: {
+            industry: true,
+            country: true,
+          },
+          comments: true,
+          likes: true,
+        },
         where: { id: id },
       });
       if (!post) {
